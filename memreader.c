@@ -13,23 +13,16 @@ WINBASEAPI size_t __cdecl MSVCRT$strlen( const char * str );
 WINBASEAPI int __cdecl MSVCRT$sprintf(char *, const char *, ...);
 	
 static  unsigned char* find_all(unsigned char* buffer, SIZE_T bufferLen, unsigned char* pattern, SIZE_T patternLen) {
-
     unsigned char* match = NULL;
     SIZE_T offset = 0;
-    
     while (offset < bufferLen) {
-
-
         match = MSVCRT$memchr(buffer + offset, pattern[0], bufferLen - offset);
-
         if (match == NULL) {
             return NULL;
         }
         else {
-
             size_t remaining = bufferLen - offset - (match - buffer);
             if (patternLen <= remaining) {
-
                 if (MSVCRT$memcmp(match, pattern, patternLen) == 0) {
                     return match;
                 }
@@ -45,14 +38,12 @@ static  unsigned char* find_all(unsigned char* buffer, SIZE_T bufferLen, unsigne
 
 void find_locs(HANDLE process, char* pattern, SIZE_T sz) {
     unsigned char* p = NULL;
-    MEMORY_BASIC_INFORMATION info;
-    
+    MEMORY_BASIC_INFORMATION info; 
     for (p = NULL; KERNEL32$VirtualQueryEx(process, p, &info, sizeof(info)) == sizeof(info); p += info.RegionSize)
     {
         unsigned char* buffer;
         unsigned char* tempBuffer;
         int isTarget = 0;
-
 
         if (info.State == MEM_COMMIT &&
             (info.Type == MEM_MAPPED || info.Type == MEM_PRIVATE))
@@ -70,9 +61,7 @@ void find_locs(HANDLE process, char* pattern, SIZE_T sz) {
     }
 }
 
-
 int go(char* argc, int len) {
-
     datap parser;
     BeaconDataParse(&parser, argc, len);
     int pid = BeaconDataInt(&parser);
