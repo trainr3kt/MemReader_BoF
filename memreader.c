@@ -61,31 +61,24 @@ void find_locs(HANDLE process, char* pattern, SIZE_T sz) {
             tempBuffer = MSVCRT$calloc(info.RegionSize, sizeof(tempBuffer));
             KERNEL32$ReadProcessMemory(process, p, &tempBuffer[0], info.RegionSize, &bytes_read);
             unsigned char* match = find_all(tempBuffer, bytes_read, pattern, MSVCRT$strlen(pattern));
-	if (match) {
+	    if (match) {
 		char * fmt = MSVCRT$calloc(40, sizeof(char));
 		MSVCRT$sprintf(fmt, "[*] MATCH FOUND : %%.%ds \n", sz);
                 BeaconPrintf(CALLBACK_OUTPUT, fmt, match);
             }
-
         }
-
     }
-    
 }
 
 
 int go(char* argc, int len) {
 
-	datap parser;
-	BeaconDataParse(&parser, argc, len);
-	int pid = BeaconDataInt(&parser);
-	char* pattern = BeaconDataExtract(&parser, NULL);
-	int sz = BeaconDataInt(&parser);
-	HANDLE process = KERNEL32$OpenProcess(
-        PROCESS_VM_READ | PROCESS_QUERY_INFORMATION,
-        FALSE,
-        pid);
-
-	find_locs(process, pattern, sz);
-	return 0;
+    datap parser;
+    BeaconDataParse(&parser, argc, len);
+    int pid = BeaconDataInt(&parser);
+    char* pattern = BeaconDataExtract(&parser, NULL);
+    int sz = BeaconDataInt(&parser);
+    HANDLE process = KERNEL32$OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, FALSE, pid);
+    find_locs(process, pattern, sz);
+    return 0;
 }
